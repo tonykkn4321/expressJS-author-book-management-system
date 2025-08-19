@@ -1,10 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const sequelize = require('./config');
+const sequelize = require('./lib/db'); // ✅ Environment-aware Sequelize instance
 const authorsRoutes = require('./routes/authors');
 const booksRoutes = require('./routes/books');
 const errorHandler = require('./middleware/errorHandler');
+
+// Load models to register associations
+require('./models'); // This loads models and sets up associations
 
 const app = express();
 const PORT = 3000;
@@ -22,9 +25,12 @@ app.use('/books', booksRoutes);
 app.use(errorHandler);
 
 // Sync DB and start server
-sequelize.sync().then(() => {
-  console.log('Database synced');
+// .sync({ alter: true }) to auto-create tables
+sequelize.sync({ alter: true }).then(() => {
+  console.log('✅ Database synced and tables updated');
   app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`🚀 Server running at http://localhost:${PORT}`);
   });
+}).catch((err) => {
+  console.error('❌ Failed to sync database:', err);
 });

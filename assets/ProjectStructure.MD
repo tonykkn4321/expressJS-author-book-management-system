@@ -22,6 +22,8 @@ expressJS-author-book-maangement-system/
 npm init -y
 npm install express sequelize sqlite3 body-parser cors dotenv morgan
 npm install --save-dev nodemon
+npm install mysql2 
+npm install pg pg-hstore (for Postgret)
 
 #   Add a Start Script
 "scripts": {

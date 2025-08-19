@@ -1,26 +1,34 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config');
+const sequelize = require('../lib/db');
 const Author = require('./authors');
 
 const Book = sequelize.define('Book', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
   title: {
     type: DataTypes.STRING,
-    allowNull: false,
+    allowNull: false
   },
   year: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    validate: {
+      isInt: true,
+      min: 1000,
+      max: new Date().getFullYear()
+    }
   },
   author_id: {
     type: DataTypes.INTEGER,
-    allowNull: false,
-  },
+    allowNull: false
+  }
 }, {
-  timestamps: false, // Disable createdAt and updatedAt
+  tableName: 'books',
+  timestamps: false
 });
 
-// Define associations
-Author.hasMany(Book, { foreignKey: 'author_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
-Book.belongsTo(Author, { foreignKey: 'author_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
 
 module.exports = Book;
